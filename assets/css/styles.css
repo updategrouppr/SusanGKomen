@@ -496,3 +496,55 @@ a.info:hover { border-color: var(--accion); }
   .map { aspect-ratio: 4/3; }
 }
 .photo-credit { margin: 14px 0 0; font-size: 13px; color: #9C9CA6; }
+
+/* ---------- Mapa animado de Puerto Rico ---------- */
+.mapsec { background: var(--negro); color: #fff; overflow: hidden; position: relative; }
+.mapsec h2 { color: #fff; }
+.mapsec .kicker { color: var(--cercania); }
+.mapsec__head { display: flex; justify-content: space-between; align-items: end; gap: 32px; flex-wrap: wrap; margin-bottom: clamp(28px, 4vw, 48px); }
+.mapsec__head h2 { margin: 0; max-width: 13ch; }
+.mapcount { font-family: var(--f-display); font-weight: 800; letter-spacing: -0.05em; line-height: .9; text-align: right; }
+.mapcount b { display: block; font-size: clamp(72px, 11vw, 150px); color: var(--cercania); font-variant-numeric: tabular-nums; }
+.mapcount span { font-size: 15px; font-family: var(--f-body); font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: #BDBDC6; }
+.mapwrap { position: relative; }
+.prmap { width: 100%; height: auto; display: block; overflow: visible; }
+.muni { fill: #1D1D22; stroke: var(--negro); stroke-width: 1.4; stroke-linejoin: round; cursor: pointer; transform-box: fill-box; transform-origin: center; transition: fill .5s var(--ease); }
+.muni.s1 { --c: #C70772; } .muni.s2 { --c: #D63B8E; } .muni.s3 { --c: #E776AD; }
+.is-painted .muni { fill: var(--c); transition: fill .55s var(--ease) var(--d); animation: muniPop .8s var(--ease) var(--d) both, muniGlow 5.5s ease-in-out calc(var(--w) + 4s) infinite; }
+.is-done .muni { transition-delay: 0s; }
+.is-done .muni:hover, .is-done .muni.is-active { fill: #fff; }
+.muni:focus-visible { outline: none; fill: #fff; }
+@keyframes muniPop { 0% { transform: scale(1); } 45% { transform: scale(1.14); } 100% { transform: scale(1); } }
+@keyframes muniGlow { 0%, 100% { filter: none; } 50% { filter: brightness(1.28) saturate(1.1); } }
+.mappin circle.dot { fill: #fff; }
+.mappin circle.ring { fill: none; stroke: #fff; stroke-width: 2; transform-box: fill-box; transform-origin: center; animation: pinPulse 2.2s ease-out infinite; }
+.mappin text { fill: #fff; font: 700 14px var(--f-body); letter-spacing: .03em; paint-order: stroke; stroke: #0A0A0B; stroke-width: 4px; stroke-linejoin: round; }
+@keyframes pinPulse { 0% { transform: scale(.6); opacity: 1; } 100% { transform: scale(3); opacity: 0; } }
+.mapinfo { margin-top: 28px; display: flex; align-items: center; justify-content: space-between; gap: 16px 24px; flex-wrap: wrap; padding: 18px 22px; border-radius: 18px; background: #151517; border: 1px solid #26262A; min-height: 80px; }
+.mapinfo__name { font-family: var(--f-display); font-weight: 800; font-size: clamp(22px, 2.4vw, 30px); letter-spacing: -0.03em; color: #fff; }
+.mapinfo__meta { color: #BDBDC6; font-size: 15px; }
+.mapinfo .btn { min-height: 46px; }
+.mapinfo.is-idle .btn { display: none; }
+
+/* Hero con movimiento */
+.hero__media .photo img { animation: kenburns 22s ease-in-out infinite alternate; }
+@keyframes kenburns { from { transform: scale(1.02) translate(0, 0); } to { transform: scale(1.12) translate(-2%, -1.5%); } }
+.hero__media .rings { animation: ringsSpin 40s linear infinite; transform-origin: 50% 50%; }
+@keyframes ringsSpin { to { transform: rotate(360deg); } }
+.hero__badge { animation: floaty 5s ease-in-out infinite; }
+@keyframes floaty { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+.hero h1 .accent { background: linear-gradient(90deg, var(--accion), var(--cercania), var(--accion)); background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: shine 6s linear infinite; }
+@keyframes shine { to { background-position: -200% 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .is-painted .muni { animation: none; transition: none; }
+  .hero__media .photo img, .hero__media .rings, .hero__badge, .hero h1 .accent, .mappin circle.ring { animation: none; }
+}
+@media (max-width: 600px) {
+  .mapcount { text-align: left; }
+  .mappin text { font-size: 20px; }
+  .muni { stroke-width: 1.6; }
+  .mapwrap { margin: 8px calc(var(--gutter) * -1) 0; }
+  .mapsec__head { margin-bottom: 12px; }
+  .mapcount b { font-size: 64px; }
+}

@@ -148,6 +148,8 @@
       });
     });
     sel.addEventListener("change", render);
+    var qm = new URLSearchParams(location.search).get("m");
+    if (qm && towns[qm]) sel.value = qm;
     render();
   }
 
@@ -160,6 +162,70 @@
       f.reset();
     });
   });
+
+  // Mapa de Puerto Rico que se pinta de rosa
+  var mapsec = $(".mapsec");
+  if (mapsec) {
+    var svg = $(".prmap", mapsec), munis = $$(".muni", svg);
+    var countEl = $("#muni-count"), info = $(".mapinfo", mapsec);
+    var nameEl = $(".mapinfo__name", info), metaEl = $(".mapinfo__meta", info), linkEl = $(".btn", info);
+    var svc = {};
+    (window.KOMEN_SERVICIOS || []).forEach(function (o) {
+      o.towns.forEach(function (t) { (svc[t] = svc[t] || {})[o.name] = 1; });
+    });
+    var order = munis.slice().sort(function (a, b) { return a.dataset.cx - b.dataset.cx; });
+    order.forEach(function (m, i) {
+      var t = +m.dataset.cx / 1000;
+      var d = t * 2.6 + ((i * 37) % 11) / 40;
+      m.dataset.d = d;
+      m.style.setProperty("--d", d.toFixed(2) + "s");
+      m.style.setProperty("--w", (t * 3).toFixed(2) + "s");
+      m.classList.add("s" + (1 + (i * 7) % 3));
+      m.setAttribute("tabindex", "0");
+      m.setAttribute("role", "button");
+      m.setAttribute("aria-label", m.dataset.name);
+    });
+    // Punto que late sobre la oficina (Guaynabo)
+    var gy = munis.filter(function (m) { return m.dataset.name === "Guaynabo"; })[0];
+    if (gy) {
+      var NS = "http://www.w3.org/2000/svg", g = document.createElementNS(NS, "g");
+      g.setAttribute("class", "mappin"); g.setAttribute("aria-hidden", "true");
+      var px = +gy.dataset.cx, py = +gy.dataset.cy;
+      g.innerHTML = '<circle class="ring" cx="' + px + '" cy="' + py + '" r="7"/><circle class="dot" cx="' + px + '" cy="' + py + '" r="5"/><text x="' + (px + 12) + '" y="' + (py - 12) + '">Oficina Komen PR</text>';
+      svg.appendChild(g);
+    }
+    var painted = false;
+    function paint() {
+      if (painted) return; painted = true;
+      if (reduce) { mapsec.classList.add("is-painted", "is-done"); countEl.textContent = "78"; return; }
+      mapsec.classList.add("is-painted");
+      var n = 0, last = 0;
+      order.forEach(function (m) {
+        var ms = (+m.dataset.d + 0.25) * 1000; last = Math.max(last, ms);
+        setTimeout(function () { n++; countEl.textContent = n; }, ms);
+      });
+      setTimeout(function () { mapsec.classList.add("is-done"); countEl.textContent = "78"; }, last + 700);
+    }
+    if ("IntersectionObserver" in window) {
+      var mo = new IntersectionObserver(function (en) { if (en[0].isIntersecting) { paint(); mo.disconnect(); } }, { threshold: 0.35 });
+      mo.observe(svg);
+    } else { paint(); }
+    function show(m) {
+      munis.forEach(function (x) { x.classList.toggle("is-active", x === m); });
+      var name = m.dataset.name, n = Object.keys(svc[name] || {}).length;
+      nameEl.textContent = name;
+      metaEl.textContent = n ? n + (n === 1 ? " organización aliada ofrece" : " organizaciones aliadas ofrecen") + " servicios aquí." : "Komen te orienta directamente: 787-751-9096.";
+      linkEl.href = "ayuda.html?m=" + encodeURIComponent(name);
+      linkEl.firstChild.textContent = "Ver ayuda en " + name + " ";
+      info.classList.remove("is-idle");
+    }
+    munis.forEach(function (m) {
+      m.addEventListener("mouseenter", function () { show(m); });
+      m.addEventListener("focus", function () { show(m); });
+      m.addEventListener("click", function () { show(m); });
+      m.addEventListener("keydown", function (e) { if (e.key === "Enter") { show(m); location.href = linkEl.href; } });
+    });
+  }
 
   var y = $("#year"); if (y) y.textContent = new Date().getFullYear();
 })();

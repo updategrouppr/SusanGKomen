@@ -194,6 +194,7 @@ home_gallery = gallery([
   ("pinkday-grupo-2", "Equipo de Deco Centro con camisetas del Pink Day"),
 ], ["m-a", "m-b", "m-c", "m-e", "m-e", "m-d", "m-f", "m-e", "m-e"])
 
+PRMAP = open(os.path.join(ROOT, "data", "pr_map.svg"), encoding="utf-8").read()
 home = f'''
 <section class="hero"><div class="wrap hero__grid">
   <div>
@@ -215,6 +216,18 @@ home = f'''
 <div class="marquee" aria-hidden="true"><div class="marquee__track">
   {"".join(f'<span class="marquee__item">{t}{{{{i:ribbon}}}}</span>' for t in ["Tu apoyo nos mueve", "Detección temprana salva vidas", "78 municipios", "Humano. Claro. Activo.", "En cada paso, juntos por ti"] * 2)}
 </div></div>
+
+<section class="section mapsec" id="mapa"><div class="wrap">
+  <div class="mapsec__head">
+    <div><p class="kicker">Presentes en toda la Isla</p><h2>Puerto Rico, pintado de rosa.</h2></div>
+    <div class="mapcount" aria-live="off"><b id="muni-count">0</b><span>de 78 municipios</span></div>
+  </div>
+  <div class="mapwrap">{PRMAP}</div>
+  <div class="mapinfo is-idle">
+    <div><div class="mapinfo__name">Toca tu municipio</div><div class="mapinfo__meta">Mira cuántas organizaciones aliadas ofrecen servicios cerca de ti.</div></div>
+    <a class="btn btn--sm" href="ayuda.html">Ver ayuda {{{{i:arrow}}}}</a>
+  </div>
+</div></section>
 
 <section class="section"><div class="wrap">
   <div class="shead reveal"><div><p class="kicker">¿Cómo te ayudamos hoy?</p><h2>Empieza por aquí.</h2></div></div>
@@ -299,7 +312,7 @@ home = f'''
   </div>
 </div></section>
 '''
-page("index.html", "Inicio", "Susan G. Komen Puerto Rico: educación, cernimiento, ayuda para tratamiento y apoyo a sobrevivientes de cáncer de seno en los 78 municipios. El 100% de los fondos se queda en Puerto Rico.", home)
+page("index.html", "Inicio", "Susan G. Komen Puerto Rico: educación, cernimiento, ayuda para tratamiento y apoyo a sobrevivientes de cáncer de seno en los 78 municipios. El 100% de los fondos se queda en Puerto Rico.", home, scripts='<script src="data/servicios.js"></script>\n')
 
 # =====================================================================
 # NOSOTROS

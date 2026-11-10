@@ -12,6 +12,9 @@ index · nosotros · cancer-de-seno · ayuda (buscador por municipio) · sobrevi
 - Servicios del Programa de Ayudas: `data/servicios.json` → `python3 build.py` regenera `data/servicios.js`
 - Fotos usadas: `img/photos/` (1600px). Originales de Facebook en `img/_originales/` (no se publican).
 
+## Mapa animado
+- `data/pr_map.svg` tiene los 78 municipios. Se genera con `python3 tools/make_map.py geojson-counties-fips.json` (GeoJSON de condados de plotly/datasets).
+
 ## Ver en local
 python3 -m http.server 8765   →   http://localhost:8765
 
